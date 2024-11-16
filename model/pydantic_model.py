@@ -1,13 +1,14 @@
 from pydantic import BaseModel
 
 class DiabetesInput(BaseModel):
+    id : int
     Pregnancies: int
     Glucose : float
-    Blood_Pressure: float
-    Skin_Thickness:float
+    BloodPressure: float
+    SkinThickness:float
     Insulin : float
     BMI : float
-    Diabetes_Pedigree_Fuction : float
+    DiabetesPedigreeFunction : float
     Age : int
     Outcome : int
 
@@ -16,4 +17,4 @@ class DiabetesOutput(DiabetesInput):
     id : int
 
     class Config:
-        orm_model = True
+        from_attributes = True
