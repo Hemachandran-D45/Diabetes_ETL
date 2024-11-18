@@ -32,9 +32,6 @@ Base.metadata.create_all(engine)
 
 try:
 
-
-
-
     filepath = 'diabetes.csv'
     cleaned_data = clean_data(filepath)
     cleaned_data.to_sql('diabetes_dataset',engine,if_exists='replace',index=False)
