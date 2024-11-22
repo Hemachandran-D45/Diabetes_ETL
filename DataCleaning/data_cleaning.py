@@ -1,5 +1,8 @@
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+
+
 
 def clean_data(filepath:str) -> pd.DataFrame:
 
@@ -29,6 +32,12 @@ def clean_data(filepath:str) -> pd.DataFrame:
         median_value = df[column].replace(0,pd.NA).median()
         df[column] = df[column].replace(0,median_value)
 
+    #normalization the data
+    scaler = MinMaxScaler()
+    normalize_cols = ['Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction']
+    df[normalize_cols] = scaler.fit_transform(df[normalize_cols])
+    # print(df[normalize_cols].describe())
+
     df_loc = ['id','Gender','Age','Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Outcome']
     df = df[df_loc]
     # print(df.head())
@@ -39,7 +48,7 @@ def clean_data(filepath:str) -> pd.DataFrame:
 
     df_combined = X.copy()
     df_combined['Outcome']= Y
-    print(df_combined.head())
+    # print(df_combined.head())
 
     return df_combined
 
@@ -63,4 +72,4 @@ def clean_data(filepath:str) -> pd.DataFrame:
 
 
 # filepath = 'diabetes.csv'
-# X,Y = clean_data(filepath)
+# df = clean_data(filepath)
