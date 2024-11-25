@@ -33,9 +33,9 @@ def clean_data(filepath:str) -> pd.DataFrame:
         df[column] = df[column].replace(0,median_value)
 
     #normalization the data
-    scaler = MinMaxScaler()
-    normalize_cols = ['Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction']
-    df[normalize_cols] = scaler.fit_transform(df[normalize_cols])
+    # scaler = MinMaxScaler()
+    # normalize_cols = ['Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction']
+    # df[normalize_cols] = scaler.fit_transform(df[normalize_cols])
     # print(df[normalize_cols].describe())
 
     df_loc = ['id','Gender','Age','Pregnancies','Glucose','BloodPressure','SkinThickness','Insulin','BMI','DiabetesPedigreeFunction','Outcome']

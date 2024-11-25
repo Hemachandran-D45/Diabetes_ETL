@@ -23,6 +23,15 @@ def load_cleaned_data(table_name :str)->pd.DataFrame:
         print(f"Error loading data : {e}")
         return pd.DataFrame()
     
+# def display_min_max_values(df: pd.DataFrame):
+#     """Display minimum and maximum values for each column in the dataframe"""
+#     min_max_values = pd.DataFrame({
+#         'Column': df.columns,
+#         'Minimum Value': df.min(),
+#         'Maximum Value': df.max()
+#     })
+#     print(min_max_values)
+    
 
 def detect_outlier(df: pd.DataFrame):
     """Detect and handle outlier using IQR method"""
@@ -32,6 +41,11 @@ def detect_outlier(df: pd.DataFrame):
 
     intial_rows = df.shape[0]
     print(f'Initial number of rows : {intial_rows}')
+
+    # min_age = df['Age'].min()
+    # max_age = df['Age'].max() 
+    # print(f'mini age {min_age}')
+    # print(f'max age {max_age}')
     #plot before handlng outliers (boxplot)
     plt.figure(figsize=(12,8))
     for i , col in enumerate(numeric_columns,1):
@@ -50,8 +64,8 @@ def detect_outlier(df: pd.DataFrame):
         IQR = Q3-Q1 
 
         #calculate the outlier boundaries
-        lower_bound = Q1 - 1.5 * IQR
-        upper_bound = Q3 + 1.5 * IQR
+        lower_bound = Q1 - 3.5 * IQR
+        upper_bound = Q3 + 3.5 * IQR
 
         #filter out rows with outliers
         df = df[(df[col] >= lower_bound )&(df[col]<=upper_bound)]
@@ -70,11 +84,6 @@ def detect_outlier(df: pd.DataFrame):
     plt.tight_layout()
     plt.show()
     return df 
-
-
-
-
-
 
 
 
@@ -101,6 +110,7 @@ def perform_eda(df: pd.DataFrame):
         plt.xlabel(col)
         plt.ylabel("Frequency")
         plt.show()
+        #plt.savefig(f"{column}_distribution.png")
 
    
 
@@ -122,6 +132,7 @@ if __name__ == "__main__":
     data = load_cleaned_data(table_name)
 
     if not data.empty:
+        # display_min_max_values(data)
         data = detect_outlier(data)
         perform_eda(data)
 
