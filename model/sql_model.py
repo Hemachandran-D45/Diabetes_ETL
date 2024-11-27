@@ -5,7 +5,8 @@ Base = declarative_base()
 
 class Diabetes(Base):
     __tablename__ = 'diabetes_dataset'
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    Gender = Column(Integer)
     Pregnancies = Column(Integer)
     Glucose = Column(Float)
     BloodPressure = Column(Float)

@@ -7,6 +7,7 @@ from sklearn.metrics import confusion_matrix, accuracy_score, classification_rep
 from Eda import load_cleaned_data, detect_outlier
 from feature_engineering import feature_engineering
 import matplotlib.pyplot as plt 
+import joblib
 
 
 
@@ -23,8 +24,10 @@ def train_and_evaluate_model():
         engineering_data = feature_engineering(data)
 
         #Prepare the data for training
-        X = engineering_data.drop(columns=['Outcome','Age_Bin','BMI_Category'])
+        X = engineering_data.drop(columns=['id','Outcome','Age_Bin','BMI_Category'])
         y = engineering_data['Outcome']
+        print(X.columns)
+        print(y)
 
         #Split into training(80%) and testing data(20%)
         #train_test_split shuffles the data and splits it into random subsets
@@ -42,14 +45,17 @@ def train_and_evaluate_model():
 
         #Train the model
         #Model 1: Random Forest Classifier : is an ensemble method that uses multiple decision tress to make decision
-        print("\n=== Random Forest Classifier ===")
+
         rf_model = RandomForestClassifier(random_state=42)
         rf_model.fit(X_train_scaled,y_train)
-
-    
+        #save the random forest model and scaler
+        joblib.dump(rf_model,"random_forest_model.pkl")
+        joblib.dump(scaler,"scaler.pkl")
+        print("Random Forest model and scaler saved successfully")
+        print("\n=== Random Forest Classifier ===")
+        
         #Make prediction with Random forest
         rf_y_pred = rf_model.predict(X_test_scaled)
-
     
         #Evaluate the model
         print("Accuracy:", accuracy_score(y_test,rf_y_pred))
@@ -91,6 +97,7 @@ def train_and_evaluate_model():
 
 if __name__ == "__main__":
     train_and_evaluate_model()
+
 
 
 
