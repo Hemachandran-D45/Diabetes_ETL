@@ -1,6 +1,6 @@
 import pandas as pd 
 import numpy as np
-from Eda import load_cleaned_data, detect_outlier
+from Perform.Eda import load_cleaned_data, detect_outlier
 
 def create_age_bins(df:pd.DataFrame) -> pd.DataFrame:
     """Create age bins and add new column"""
@@ -30,7 +30,7 @@ def feature_engineering(df:pd.DataFrame) ->pd.DataFrame:
 
 if __name__ == '__main__':
     #load the cleaned data 
-    table_name = 'diabetes_dataset'
+    table_name = 'diabetes'
 
     data = load_cleaned_data(table_name)
     if not data.empty:

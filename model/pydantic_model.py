@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, model_validator, ValidationError
 
 class DiabetesInput(BaseModel):
-    id : int
+
     Pregnancies: int
     Glucose : float
     BloodPressure: float
@@ -10,6 +10,7 @@ class DiabetesInput(BaseModel):
     BMI : float
     DiabetesPedigreeFunction : float
     Age : int
+    Gender:int
     Outcome : int
 
 
@@ -52,3 +53,4 @@ class DiabetesPredictionInput(BaseModel):
 
 class DiabetesPrediction(BaseModel):
     prediction: str
+    message: str

@@ -1,14 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException,Query
 from model.pydantic_model import DiabetesInput,DiabetesOutput,DiabetesPrediction,DiabetesPredictionInput
 from model.sql_model import Diabetes
 from connection import session
-from pydantic import BaseModel
 import logging
 import joblib
-from sklearn.preprocessing import StandardScaler
-import numpy as np
 import pandas as pd
 logging.basicConfig(level=logging.ERROR)
+import traceback
+
 
 
 
@@ -21,6 +20,9 @@ try:
 except Exception as e:
     raise RuntimeError(f"Error Loading model or scaler: {str(e)}")
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Diabetes Prediction API!"}
 
 @app.post("/diabetes/",response_model=DiabetesOutput)
 def create_record(record: DiabetesInput):
@@ -87,7 +89,7 @@ def delete_record(id:int):
     db_session.close()
     return {"msd":"Record deleted successfully"}
 
-@app.post("/predict_and_save/", response_model=DiabetesOutput)
+@app.post("/predict_and_save/", response_model=DiabetesPrediction)
 def predict_and_save(record: DiabetesPredictionInput):
     try:
         #validate
@@ -114,8 +116,6 @@ def predict_and_save(record: DiabetesPredictionInput):
         data["BMI_Age"] = [record.BMI * record.Age]
         df = pd.DataFrame(data)
 
-        df["id"] = [0]
-
         ordered_columns = [
             'Gender', 'Age', 'Pregnancies', 'Glucose', 'BloodPressure',
             'SkinThickness', 'Insulin', 'BMI', 'DiabetesPedigreeFunction',
@@ -130,32 +130,49 @@ def predict_and_save(record: DiabetesPredictionInput):
 
         # Make the prediction
         prediction = model.predict(data_scaled)
-        outcome = 1 if prediction[0] == 1 else 0
+        outcome = "Diabetes" if prediction[0] == 1 else "No Diabetes"
 
-        # Save the input data along with the prediction to the database
-        db_session = session()
-        db_record = Diabetes(
-            Gender=record.Gender,
-            Age = record.Age,
-            Pregnancies=record.Pregnancies,
-            Glucose=record.Glucose,
-            BloodPressure=record.BloodPressure,
-            SkinThickness=record.SkinThickness,
-            Insulin=record.Insulin,
-            BMI=record.BMI,
-            DiabetesPedigreeFunction=record.DiabetesPedigreeFunction,
-            
-            Outcome=outcome  # Store prediction result in Outcome
-        )
-        db_session.add(db_record)
-        db_session.commit()
-        db_session.refresh(db_record)
+        return{
+            "prediction":outcome,
+            "message":"Prediction successful. To save this record , use the '/save_record/' endpoint."
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error during prediction: {str(e)}")
 
-        # Return the saved record and prediction result
-        return db_record
+@app.post("/save_record/", response_model=DiabetesOutput)
+def save_record(record: DiabetesPredictionInput, outcome:str):
+    try:
+
+        # if save:
+          # Save the input data along with the prediction to the database
+            db_session = session()
+            db_record = Diabetes(
+                Gender=record.Gender,
+                Age = record.Age,
+                Pregnancies=record.Pregnancies,
+                Glucose=record.Glucose,
+                BloodPressure=record.BloodPressure,
+                SkinThickness=record.SkinThickness,
+                Insulin=record.Insulin,
+                BMI=record.BMI,
+                DiabetesPedigreeFunction=record.DiabetesPedigreeFunction,   
+                Outcome=1 if outcome == "Diabetes" else 0 # Store prediction result in Outcome
+            )
+            db_session.add(db_record)
+            db_session.commit()  # Commit the transaction
+            db_session.refresh(db_record) # Refresh the record to get the generated ID
+            # db_session.close()
+            # Return the saved record and prediction result
+            return db_record
+        
+        # return{
+        #     "prediction": outcome,
+        #     "message":"Prediction successful. To save this record, use the 'save' query parameter with 'save = true'."
+        # }
     except Exception as e:
         db_session.rollback()
+        # logging.error(traceback.format_exc())
         raise HTTPException(status_code=500, detail=f"Error during prediction and saving: {str(e)}")
-    
+        
     finally:
-        db_session.close()
+        db_session.close()      

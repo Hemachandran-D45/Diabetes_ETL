@@ -128,7 +128,7 @@ def perform_eda(df: pd.DataFrame):
 
 if __name__ == "__main__":
 
-    table_name = 'diabetes_dataset'
+    table_name = 'diabetes'
     data = load_cleaned_data(table_name)
 
     if not data.empty:

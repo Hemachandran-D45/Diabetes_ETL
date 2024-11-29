@@ -4,8 +4,8 @@ from sqlalchemy import Column,Integer,Float
 Base = declarative_base()
 
 class Diabetes(Base):
-    __tablename__ = 'diabetes_dataset'
-    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    __tablename__ = 'diabetes'
+    id = Column(Integer, primary_key=True,autoincrement=True)
     Gender = Column(Integer)
     Pregnancies = Column(Integer)
     Glucose = Column(Float)
@@ -15,4 +15,8 @@ class Diabetes(Base):
     BMI = Column(Float)
     DiabetesPedigreeFunction = Column(Float)
     Age = Column(Integer)
-    Outcome = Column(Integer)   
+    Outcome = Column(Integer)
+
+
+    def __init__(self, **kwargs):
+            super().__init__(**kwargs)

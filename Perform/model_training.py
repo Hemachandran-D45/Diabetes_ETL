@@ -4,8 +4,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, ConfusionMatrixDisplay
-from Eda import load_cleaned_data, detect_outlier
-from feature_engineering import feature_engineering
+from Perform.Eda import load_cleaned_data, detect_outlier
+from Perform.feature_engineering import feature_engineering
 import matplotlib.pyplot as plt 
 import joblib
 
@@ -13,7 +13,7 @@ import joblib
 
 def train_and_evaluate_model():
     #Load and preprocess data
-    table_name = "diabetes_dataset"
+    table_name = "diabetes"
     data = load_cleaned_data(table_name)
 
     if not data.empty:
@@ -24,7 +24,7 @@ def train_and_evaluate_model():
         engineering_data = feature_engineering(data)
 
         #Prepare the data for training
-        X = engineering_data.drop(columns=['id','Outcome','Age_Bin','BMI_Category'])
+        X = engineering_data.drop(columns=['Outcome','Age_Bin','BMI_Category'])
         y = engineering_data['Outcome']
         print(X.columns)
         print(y)
