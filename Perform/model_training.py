@@ -4,10 +4,11 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix, accuracy_score, classification_report, ConfusionMatrixDisplay
-from Perform.Eda import load_cleaned_data, detect_outlier
-from Perform.feature_engineering import feature_engineering
+from Eda import load_cleaned_data, detect_outlier
+from feature_engineering import feature_engineering
 import matplotlib.pyplot as plt 
 import joblib
+from sklearn.svm import SVC
 
 
 
@@ -81,7 +82,13 @@ def train_and_evaluate_model():
         print("Classification Report:")
         print(classification_report(y_test, lr_y_pred))
 
-
+        #Model 3: Support Vector Machine
+        print("======SVM=======")
+        svm_model = SVC(kernel='rbf',C=1.0,gamma='scale',random_state=42)
+        svm_model.fit(X_train,y_train)
+        svm_y_pred = svm_model.predict(X_test)
+        print("Accuracy:" , accuracy_score(y_test,svm_y_pred))
+        print(classification_report(y_test,svm_y_pred))
 
 
         #Compare real vs predicted

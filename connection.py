@@ -7,7 +7,7 @@ from model.sql_model import Base,Diabetes
 from dotenv import load_dotenv
 import os
 
-load_dotenv(dotenv_path="venv\Lib\site-packages\python_dotenv-1.0.1.dist-info\.env")
+load_dotenv(dotenv_path="venv/Lib/site-packages/python_dotenv-1.0.1.dist-info/.env")
 
 db_user = os.getenv('DB_USER')
 db_password= os.getenv('DB_PASSWORD')
